@@ -16,7 +16,7 @@ public class Main {
         Set<String> wantedItems = scanner.scan();
 
         OpenCSV reader = new OpenCSV();
-        Map<String, String> items = reader.read(wantedItems);
+        Map<String, Map<String, String>> items = reader.read(wantedItems);
 
         OpenPDF writer = new OpenPDF();
         writer.write(REPORT, items);

@@ -12,22 +12,27 @@ import java.util.Set;
 
 public class OpenCSV {
 
-    public static final String FORM = "Form-1.csv";
+    public static final String FORM = "Form-5.csv";
+    public static final String NN = "NN";
+    public static final String DESCRIPTION = "Description";
+    public static final String JUSTIFICATION = "Justification";
 
-    public Map<String, String> read(Set<String> wantedIds) {
-        Map<String, String> result = new LinkedHashMap<>();
+    public Map<String, Map<String, String>> read(Set<String> wantedIds) {
+        Map<String, Map<String, String>> result = new LinkedHashMap<>();
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FORM)) {
             if (inputStream == null) {
-                System.err.println("File not found in resources");
+                System.err.println("Form not found in resources");
                 return result;
             }
             try (CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(new InputStreamReader(inputStream))) {
                 Map<String, String> row;
                 while ((row = csvReader.readMap()) != null) {
-                    String item = row.get("Item");
+                    String item = row.get(NN);
                     if (wantedIds.contains(item)) {
-                        result.put(item, row.get("Description"));
+                        result.put(item, Map.of(
+                                DESCRIPTION, row.get(DESCRIPTION),
+                                JUSTIFICATION, row.get(JUSTIFICATION)));
                     }
                 }
             } catch (CsvValidationException e) {

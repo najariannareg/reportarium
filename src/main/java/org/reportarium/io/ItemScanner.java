@@ -14,7 +14,7 @@ public class ItemScanner {
         boolean isValidInput = false;
         while (!isValidInput) {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter the item numbers you want to include (e.g., 1,3,4.1,7): ");
+            System.out.println("Enter the item numbers you want to include (e.g., 1, 2.1, 3): ");
             String input = scanner.nextLine();
 
             String[] inputItems = input.split(",");
@@ -33,7 +33,7 @@ public class ItemScanner {
     }
 
     private boolean validateInput(String[] inputItems) {
-        // Pattern to match integer or decimal-like numbers (e.g., "4.1")
+        // Pattern to match integer or decimal-like numbers (e.g., "2.1")
         String regex = "^[0-9]+(\\.[0-9]+)?$";
         Pattern pattern = Pattern.compile(regex);
 

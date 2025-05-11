@@ -1,6 +1,6 @@
 package org.reportarium;
 
-import org.reportarium.io.ItemScanner;
+import org.reportarium.io.DialogReader;
 import org.reportarium.io.OpenCSV;
 import org.reportarium.io.OpenPDF;
 
@@ -12,8 +12,8 @@ public class Main {
     public static final String REPORT = "Report.pdf";
 
     public static void main(String[] args) {
-        ItemScanner scanner = new ItemScanner();
-        Set<String> wantedItems = scanner.scan();
+        DialogReader dialog = new DialogReader();
+        Set<String> wantedItems = dialog.read();
 
         OpenCSV reader = new OpenCSV();
         Map<String, Map<String, String>> items = reader.read(wantedItems);

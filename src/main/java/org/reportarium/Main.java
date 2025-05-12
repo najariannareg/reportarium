@@ -1,25 +1,22 @@
 package org.reportarium;
 
-import org.reportarium.io.DialogReader;
-import org.reportarium.io.OpenCSV;
-import org.reportarium.io.OpenPDF;
+import org.reportarium.exception.CancellationException;
+import org.reportarium.generator.ReportGenerator;
 
-import java.util.Map;
-import java.util.Set;
+import javax.swing.*;
 
 public class Main {
 
-    public static final String REPORT = "Report.pdf";
-
     public static void main(String[] args) {
-        DialogReader dialog = new DialogReader();
-        Set<String> wantedItems = dialog.read();
-
-        OpenCSV reader = new OpenCSV();
-        Map<String, Map<String, String>> items = reader.read(wantedItems);
-
-        OpenPDF writer = new OpenPDF();
-        writer.write(REPORT, items);
+        try {
+            ReportGenerator generator = new ReportGenerator();
+            generator.generate();
+            JOptionPane.showMessageDialog(null, "Հաշվետվությունը ստեղծվել է։");
+        } catch (CancellationException cancellationException) {
+            JOptionPane.showMessageDialog(null, cancellationException.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Հաշվետվությունը ստեղծելիս սխալ է տեղի ունեցել։ " + e.getMessage());
+        }
     }
 
 }

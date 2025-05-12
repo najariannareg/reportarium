@@ -2,6 +2,7 @@ package org.reportarium.io;
 
 import com.opencsv.CSVReaderHeaderAware;
 import com.opencsv.exceptions.CsvValidationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.reportarium.model.Item;
 
 import java.io.IOException;
@@ -25,33 +26,41 @@ public class OpenCSV {
         Map<String, List<Item>> result = new HashMap<>();
         for (Map.Entry<String, Set<String>> entry : formToWantedIdsMap.entrySet()) {
             String form = FORMS.get(entry.getKey());
-            result.put(entry.getKey(), getItems(form, entry.getValue()));
+
+            List<Item> items = getItems(form, entry.getValue());
+            if (CollectionUtils.isNotEmpty(items)) {
+                result.put(entry.getKey(), items);
+            }
         }
         return result;
     }
 
     private List<Item> getItems(String form, Set<String> wantedIds) {
-        List<Item> result = new ArrayList<>();
-
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(form)) {
             if (inputStream == null) {
                 System.err.println("Form not found in resources");
-                return result;
+                return null;
             }
-            try (CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(new InputStreamReader(inputStream))) {
-                Map<String, String> row;
-                while ((row = csvReader.readMap()) != null) {
-                    String number = row.get(NN);
-                    if (wantedIds.contains(number)) {
-                        result.add(new Item(number, row.get(DESCRIPTION),row.get(JUSTIFICATION)));
-                    }
-                }
-            } catch (CsvValidationException e) {
-                System.err.println("Error reading CSV: " + e.getMessage());
-            }
+            return getItems(inputStream, wantedIds);
         } catch (IOException e) {
             System.err.println("Error reading CSV: " + e.getMessage());
-            return result;
+            return null;
+        }
+    }
+
+    private List<Item> getItems(InputStream inputStream, Set<String> wantedIds) {
+        List<Item> result = new ArrayList<>();
+
+        try (CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(new InputStreamReader(inputStream))) {
+            Map<String, String> row;
+            while ((row = csvReader.readMap()) != null) {
+                String number = row.get(NN);
+                if (wantedIds.contains(number)) {
+                    result.add(new Item(number, row.get(DESCRIPTION),row.get(JUSTIFICATION)));
+                }
+            }
+        } catch (IOException | CsvValidationException e) {
+            System.err.println("Error reading CSV: " + e.getMessage());
         }
         return result;
     }

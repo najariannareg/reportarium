@@ -5,12 +5,11 @@ import org.reportarium.io.OpenCSV;
 import org.reportarium.io.OpenPDF;
 import org.reportarium.model.Item;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ReportGenerator {
-
-    public static final String REPORT = "Report.pdf";
 
     public static final Map<String, String> FORMS = Map.of(
             "Հավելված 5", "Form-5.csv",
@@ -25,11 +24,8 @@ public class ReportGenerator {
         OpenCSV reader = new OpenCSV();
         OpenPDF writer = new OpenPDF();
 
-        for (Map.Entry<String, Set<String>> entry : wantedItems.entrySet()) {
-            Map<String, Item> items = reader.read(FORMS.get(entry.getKey()), entry.getValue());
-            writer.write(REPORT, items);
-        }
-
+        Map<String, List<Item>> items = reader.read(wantedItems);
+        writer.write(items);
     }
 
 }

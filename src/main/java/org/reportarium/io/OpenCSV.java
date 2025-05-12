@@ -7,9 +7,13 @@ import org.reportarium.model.Item;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static org.reportarium.generator.ReportGenerator.FORMS;
 
 public class OpenCSV {
 
@@ -17,8 +21,17 @@ public class OpenCSV {
     public static final String DESCRIPTION = "Description";
     public static final String JUSTIFICATION = "Justification";
 
-    public Map<String, Item> read(String form, Set<String> wantedIds) {
-        Map<String, Item> result = new LinkedHashMap<>();
+    public Map<String, List<Item>> read(Map<String, Set<String>> formToWantedIdsMap) {
+        Map<String, List<Item>> result = new HashMap<>();
+        for (Map.Entry<String, Set<String>> entry : formToWantedIdsMap.entrySet()) {
+            String form = FORMS.get(entry.getKey());
+            result.put(entry.getKey(), getItems(form, entry.getValue()));
+        }
+        return result;
+    }
+
+    private List<Item> getItems(String form, Set<String> wantedIds) {
+        List<Item> result = new ArrayList<>();
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(form)) {
             if (inputStream == null) {
@@ -30,7 +43,7 @@ public class OpenCSV {
                 while ((row = csvReader.readMap()) != null) {
                     String number = row.get(NN);
                     if (wantedIds.contains(number)) {
-                        result.put(number, new Item(number, row.get(DESCRIPTION),row.get(JUSTIFICATION)));
+                        result.add(new Item(number, row.get(DESCRIPTION),row.get(JUSTIFICATION)));
                     }
                 }
             } catch (CsvValidationException e) {

@@ -13,57 +13,76 @@ import org.reportarium.model.Item;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 public class OpenPDF {
 
+    public static final String REPORT = "Report.pdf";
     public static final String FONT = "NotoSansArmenian-Regular.ttf";
 
-    public void write(String filename, Map<String, Item> items) {
+    public void write(Map<String, List<Item>> items) {
         try {
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-            PdfWriter.getInstance(document, new FileOutputStream(filename));
+            PdfWriter.getInstance(document, new FileOutputStream(REPORT));
             document.open();
 
-            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FONT)) {
-                if (inputStream == null) {
-                    System.err.println("Font not found in resources");
-                    return;
-                }
-                BaseFont baseFont = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED, false, inputStream.readAllBytes(), null);
-                Font font = new Font(baseFont, 12, Font.NORMAL);
-
-                Paragraph title = new Paragraph("ՀԱՇՎԵՏՎՈՒԹՅՈՒՆ ԽԱԽՏՈՒՄՆԵՐԻ ՄԱՍԻՆ", new Font(baseFont, 16, Font.BOLD));
-                title.setAlignment(Element.ALIGN_CENTER);
-                title.setSpacingAfter(20f);
-                document.add(title);
-
-                Paragraph heading = new Paragraph("ՀԱՎԵԼՎԱԾ 5:", new Font(baseFont, 14, Font.UNDERLINE));
-                heading.setAlignment(Element.ALIGN_LEFT);
-                heading.setSpacingAfter(20f);
-                document.add(heading);
-
-                com.lowagie.text.List pdfList = new com.lowagie.text.List(true, 20f);
-
-                for (Map.Entry<String, Item> entry : items.entrySet()) {
-                    Item item = entry.getValue();
-                    String text = entry.getKey() + ": " + item.description() + "\n" + item.justification();
-
-                    ListItem listItem = new ListItem(text, font);
-                    listItem.setSpacingAfter(10f);
-                    pdfList.add(listItem);
-                }
-
-                document.add(pdfList);
-            } catch (IOException e) {
-                System.err.println("Error accessing font: " + e.getMessage());
+            BaseFont baseFont = getFont();
+            if (baseFont == null) {
                 return;
+            }
+            addTitle(baseFont, document);
+
+            for (Map.Entry<String, List<Item>> entry : items.entrySet()) {
+                addHeading(entry.getKey(), baseFont, document);
+                addItems(entry.getValue(), baseFont, document);
             }
 
             document.close();
         } catch (IOException e) {
             System.err.println("Error writing PDF: " + e.getMessage());
         }
+    }
+
+    private BaseFont getFont() {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FONT)) {
+            if (inputStream == null) {
+                System.err.println("Font not found in resources");
+                return null;
+            }
+            return BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED, false, inputStream.readAllBytes(), null);
+        } catch (IOException e) {
+            System.err.println("Error accessing font: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private static void addTitle(BaseFont baseFont, Document document) {
+        Paragraph title = new Paragraph("ՀԱՇՎԵՏՎՈՒԹՅՈՒՆ ԽԱԽՏՈՒՄՆԵՐԻ ՄԱՍԻՆ", new Font(baseFont, 16, Font.BOLD));
+        title.setAlignment(Element.ALIGN_CENTER);
+        title.setSpacingAfter(20f);
+        document.add(title);
+    }
+
+    private static void addHeading(String form, BaseFont baseFont, Document document) {
+        Paragraph heading = new Paragraph(form, new Font(baseFont, 14, Font.UNDERLINE));
+        heading.setAlignment(Element.ALIGN_LEFT);
+        heading.setSpacingAfter(20f);
+        document.add(heading);
+    }
+
+    private static void addItems(List<Item> items, BaseFont baseFont, Document document) {
+        Font font = new Font(baseFont, 12, Font.NORMAL);
+
+        com.lowagie.text.List pdfList = new com.lowagie.text.List(true, 20f);
+        for (Item item : items) {
+            String text = item.number() + ": " + item.description() + "\n" + item.justification();
+
+            ListItem listItem = new ListItem(text, font);
+            listItem.setSpacingAfter(10f);
+            pdfList.add(listItem);
+        }
+        document.add(pdfList);
     }
 
 }

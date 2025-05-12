@@ -8,6 +8,7 @@ import org.reportarium.model.Item;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,7 @@ public class OpenCSV {
     private List<Item> getItems(InputStream inputStream, Set<String> wantedIds) {
         List<Item> result = new ArrayList<>();
 
-        try (CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(new InputStreamReader(inputStream))) {
+        try (CSVReaderHeaderAware csvReader = new CSVReaderHeaderAware(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             Map<String, String> row;
             while ((row = csvReader.readMap()) != null) {
                 String number = row.get(NN);

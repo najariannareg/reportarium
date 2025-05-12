@@ -14,7 +14,7 @@ public class ReportGenerator {
     public static final Map<String, String> FORMS = Map.of(
             "Հավելված 5", "Form-5.csv",
             "Հավելված 6", "Form-6.csv",
-            "Հավելված 6.1", "Form-6-1.csv"
+            "Հավելված 6.1", "Form-6.1.csv"
     );
 
     public void generate() {

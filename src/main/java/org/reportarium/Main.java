@@ -11,7 +11,7 @@ public class Main {
         try {
             ReportGenerator generator = new ReportGenerator();
             generator.generate();
-            JOptionPane.showMessageDialog(null, "Հաշվետվությունը ստեղծվել է։");
+            JOptionPane.showMessageDialog(null, "Հաշվետվությունը ստեղծվել է։ ");
         } catch (CancellationException cancellationException) {
             JOptionPane.showMessageDialog(null, cancellationException.getMessage());
         } catch (Exception e) {

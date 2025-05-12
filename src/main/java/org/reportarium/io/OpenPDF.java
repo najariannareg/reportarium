@@ -58,14 +58,15 @@ public class OpenPDF {
     }
 
     private static void addTitle(BaseFont baseFont, Document document) {
-        Paragraph title = new Paragraph("ՀԱՇՎԵՏՎՈՒԹՅՈՒՆ ԽԱԽՏՈՒՄՆԵՐԻ ՄԱՍԻՆ", new Font(baseFont, 16, Font.BOLD));
+        String titleName = "ՀԱՇՎԵՏՎՈՒԹՅՈՒՆ ԽԱԽՏՈՒՄՆԵՐԻ ՄԱՍԻՆ";
+        Paragraph title = new Paragraph(titleName, new Font(baseFont, 16, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         title.setSpacingAfter(20f);
         document.add(title);
     }
 
-    private static void addHeading(String form, BaseFont baseFont, Document document) {
-        Paragraph heading = new Paragraph(form, new Font(baseFont, 14, Font.UNDERLINE));
+    private static void addHeading(String formName, BaseFont baseFont, Document document) {
+        Paragraph heading = new Paragraph(formName, new Font(baseFont, 14, Font.UNDERLINE));
         heading.setAlignment(Element.ALIGN_LEFT);
         heading.setSpacingAfter(20f);
         document.add(heading);

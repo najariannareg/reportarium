@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static org.reportarium.generator.ReportGenerator.FORMS;
 
 public class DialogReader {
@@ -18,11 +19,21 @@ public class DialogReader {
     public Map<String, Set<String>> readInput() {
         Map<String, Set<String>> map = new LinkedHashMap<>();
 
-        String form = selectForm();
-        Set<String> items = selectItems();
+        boolean addForm = true;
+        while (addForm) {
+            String form = selectForm();
+            Set<String> items = selectItems();
 
-        if (form != null && CollectionUtils.isNotEmpty(items)) {
-            map.put(form, items);
+            if (form != null && CollectionUtils.isNotEmpty(items)) {
+                map.put(form, items);
+            }
+            int response = JOptionPane.showConfirmDialog(
+                    null,
+                    "Ուզում ե՞ք ևս մի հավելված ավելացնել։ ",
+                    "Շարունակել",
+                    JOptionPane.YES_NO_OPTION
+            );
+            addForm = (response == JOptionPane.YES_OPTION);
         }
 
         return map;
@@ -39,13 +50,13 @@ public class DialogReader {
                 comboBox,
                 "Ընտրեք Հավելվածը",
                 JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE
+                QUESTION_MESSAGE
         );
 
         if (result == JOptionPane.OK_OPTION) {
             return (String) comboBox.getSelectedItem();
         } else {
-            throw new CancellationException("Հավելվածը դատարկ է։ Հաշվետվության ստեղծումը չեղարկվեց։");
+            throw new CancellationException("Հավելվածը դատարկ է։ Հաշվետվության ստեղծումը չեղարկվեց։ ");
         }
     }
 
@@ -54,9 +65,10 @@ public class DialogReader {
 
         boolean isValidInput = false;
         while (!isValidInput) {
-            String input = JOptionPane.showInputDialog(null, "Մուտքագրեք կետերն ու ենթակետերը (Օրինակ՝ 1, 2.1, 3)");
+            String message = "Մուտքագրեք կետերն ու ենթակետերը (Օրինակ՝ 1, 2.1, 3) ";
+            String input = JOptionPane.showInputDialog(null, message, "Տվյալներ", QUESTION_MESSAGE);
             if (input == null) {
-                throw new CancellationException("Կետերն ու ենթակետերը դատարկ են։ Հաշվետվության ստեղծումը չեղարկվեց։");
+                throw new CancellationException("Կետերն ու ենթակետերը դատարկ են։ Հաշվետվության ստեղծումը չեղարկվեց։ ");
             }
             String[] inputItems = input.split(",");
             for (int i = 0; i < inputItems.length; i++) {
@@ -67,7 +79,7 @@ public class DialogReader {
             if (isValidInput) {
                 wantedItems.addAll(Arrays.asList(inputItems));
             } else {
-                JOptionPane.showMessageDialog(null, "Մուտքագրված տվյալները սխալ են։");
+                JOptionPane.showMessageDialog(null, "Մուտքագրված տվյալները սխալ են։ ");
             }
         }
         return wantedItems;

@@ -68,7 +68,8 @@ public class OpenPDF {
     private static void addHeading(String formName, BaseFont baseFont, Document document) {
         Paragraph heading = new Paragraph(formName, new Font(baseFont, 14, Font.UNDERLINE));
         heading.setAlignment(Element.ALIGN_LEFT);
-        heading.setSpacingAfter(20f);
+        heading.setSpacingBefore(20f);
+        heading.setSpacingAfter(10f);
         document.add(heading);
     }
 

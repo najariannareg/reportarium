@@ -70,8 +70,8 @@
 
                                 <argument>--win-console</argument>
 
-<!--                                <argument>&#45;&#45;icon</argument>-->
-<!--                                <argument>${project.basedir}/icon.ico</argument>-->
+                                <argument>--icon</argument>
+                                <argument>${project.basedir}/src/main/resources/reportarium.ico</argument>
                             </arguments>
                         </configuration>
                     </execution>

@@ -46,14 +46,22 @@
                 <argument>--main-jar</argument>
                 <argument>reportarium-1.0-SNAPSHOT.jar</argument>
                 <argument>--type</argument>
-                <argument>exe</argument>
+                <argument>msi</argument>
                 <argument>--app-version</argument>
                 <argument>1.0</argument>
                 <argument>--dest</argument>
-                <argument>${project.build.directory}</argument>
-                <argument>--win-console</argument>
+                <argument>${project.basedir}/installer</argument>
                 <argument>--icon</argument>
                 <argument>${project.basedir}/src/main/resources/reportarium.ico</argument>
+                <argument>--win-shortcut</argument>
+                <argument>--win-menu</argument>
+                <argument>--win-menu-group</argument>
+                <argument>Reportarium</argument>
+                <argument>--win-dir-chooser</argument>
+                <argument>--description</argument>
+                <argument>PDF report generator for site violations</argument>
+                <argument>--vendor</argument>
+                <argument>Nareg Najarian</argument>
               </arguments>
             </configuration>
           </execution>

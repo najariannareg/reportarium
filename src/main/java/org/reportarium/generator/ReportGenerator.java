@@ -17,7 +17,7 @@ public class ReportGenerator {
             "Հավելված 6.1", "Form-6.1.csv"
     );
 
-    public void generate() {
+    public String generate() {
         DialogReader dialog = new DialogReader();
         Map<String, Set<String>> wantedItems = dialog.readInput();
 
@@ -25,7 +25,14 @@ public class ReportGenerator {
         OpenPDF writer = new OpenPDF();
 
         Map<String, List<Item>> items = reader.read(wantedItems);
-        writer.write(items);
+        String path = writer.write(items);
+
+        return "Պարոն Անդրանիկ Հովակիմյան ջան, \n" +
+                "ձեր հաշվետվությունը պատրաստ է։ \n\n" +
+                "Այն կարող եք գտնել հետևյալ հասցեով՝ \n\n" +
+                path + "\n\n" +
+                "Սիրով, \n" +
+                "Նարեկ նաճարեանի և Ալինա Հովակիմյանի կողմից";
     }
 
 }

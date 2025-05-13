@@ -10,12 +10,13 @@ public class Main {
     public static void main(String[] args) {
         try {
             ReportGenerator generator = new ReportGenerator();
-            generator.generate();
-            JOptionPane.showMessageDialog(null, "Հաշվետվությունը ստեղծվել է։ ");
+            String message = generator.generate();
+            JOptionPane.showMessageDialog(null, message);
         } catch (CancellationException cancellationException) {
             JOptionPane.showMessageDialog(null, cancellationException.getMessage());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Հաշվետվությունը ստեղծելիս սխալ է տեղի ունեցել։ " + e.getMessage());
+            String errorMessage = "Հաշվետվությունը ստեղծելիս սխալ է տեղի ունեցել։ ";
+            JOptionPane.showMessageDialog(null, errorMessage + e.getMessage());
         }
     }
 

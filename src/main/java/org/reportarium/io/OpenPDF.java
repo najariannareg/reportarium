@@ -29,10 +29,11 @@ public class OpenPDF {
     public static final String EXTENSION = ".pdf";
     public static final String FONT = "NotoSansArmenian-Regular.ttf";
 
-    public void write(Map<String, List<Item>> items) {
-        FileOutputStream fileOutputStream = getFileOutputStream();
+    public String write(Map<String, List<Item>> items) {
+        File out = getOutFile();
+        FileOutputStream fileOutputStream = getFileOutputStream(out);
         if (fileOutputStream == null) {
-            return;
+            return null;
         }
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         PdfWriter.getInstance(document, fileOutputStream);
@@ -40,7 +41,7 @@ public class OpenPDF {
 
         BaseFont baseFont = getFont();
         if (baseFont == null) {
-            return;
+            return null;
         }
         addTitle(baseFont, document);
 
@@ -49,10 +50,10 @@ public class OpenPDF {
             addItems(entry.getValue(), baseFont, document);
         }
         document.close();
+        return out.getAbsolutePath();
     }
 
-    private FileOutputStream getFileOutputStream() {
-        File out = getOutFile();
+    private FileOutputStream getFileOutputStream(File out) {
         FileOutputStream fileOutputStream;
         try {
             fileOutputStream = new FileOutputStream(out);

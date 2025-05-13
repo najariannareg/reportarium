@@ -10,6 +10,7 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
 import org.reportarium.model.Item;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,30 +19,59 @@ import java.util.Map;
 
 public class OpenPDF {
 
+    public static final String USER = "user.home";
+    public static final String DIRECTORY = "Documents";
+    public static final String FOLDER = "Reportarium";
     public static final String REPORT = "Report.pdf";
     public static final String FONT = "NotoSansArmenian-Regular.ttf";
 
     public void write(Map<String, List<Item>> items) {
+        FileOutputStream fileOutputStream = getFileOutputStream();
+        if (fileOutputStream == null) {
+            return;
+        }
+        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+        PdfWriter.getInstance(document, fileOutputStream);
+        document.open();
+
+        BaseFont baseFont = getFont();
+        if (baseFont == null) {
+            return;
+        }
+        addTitle(baseFont, document);
+
+        for (Map.Entry<String, List<Item>> entry : items.entrySet()) {
+            addHeading(entry.getKey(), baseFont, document);
+            addItems(entry.getValue(), baseFont, document);
+        }
+        document.close();
+    }
+
+    private FileOutputStream getFileOutputStream() {
+        File out = getOutFile();
+        FileOutputStream fileOutputStream;
         try {
-            Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-            PdfWriter.getInstance(document, new FileOutputStream(REPORT));
-            document.open();
-
-            BaseFont baseFont = getFont();
-            if (baseFont == null) {
-                return;
-            }
-            addTitle(baseFont, document);
-
-            for (Map.Entry<String, List<Item>> entry : items.entrySet()) {
-                addHeading(entry.getKey(), baseFont, document);
-                addItems(entry.getValue(), baseFont, document);
-            }
-
-            document.close();
+            fileOutputStream = new FileOutputStream(out);
         } catch (IOException e) {
             System.err.println("Error writing PDF: " + e.getMessage());
+            return null;
         }
+        System.out.println("Writing PDF to: " + out.getAbsolutePath());
+        return fileOutputStream;
+    }
+
+    private File getOutFile() {
+        String userDocs = System.getProperty(USER) + File.separator + DIRECTORY;
+
+        File reportDir = new File(userDocs, FOLDER);
+        if (!reportDir.exists()) {
+            boolean created = reportDir.mkdirs();
+            if (!created) {
+                System.err.println("Error creating directory: " + reportDir.getAbsolutePath());
+                return new File(userDocs, REPORT);
+            }
+        }
+        return new File(reportDir, REPORT);
     }
 
     private BaseFont getFont() {

@@ -36,6 +36,47 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>package-exe</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>jpackage</executable>
+                            <arguments>
+                                <argument>--input</argument>
+                                <argument>${project.build.directory}</argument>
+
+                                <argument>--name</argument>
+                                <argument>Reportarium</argument>
+
+                                <argument>--main-jar</argument>
+                                <argument>reportarium-1.0-SNAPSHOT.jar</argument>
+
+                                <argument>--type</argument>
+                                <argument>exe</argument>
+
+                                <argument>--app-version</argument>
+                                <argument>1.0</argument>
+
+                                <argument>--dest</argument>
+                                <argument>${project.build.directory}</argument>
+
+                                <argument>--win-console</argument>
+
+<!--                                <argument>&#45;&#45;icon</argument>-->
+<!--                                <argument>${project.basedir}/icon.ico</argument>-->
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

@@ -22,7 +22,7 @@ public class DialogReader {
         boolean addForm = true;
         while (addForm) {
             String form = selectForm();
-            Set<String> items = selectItems();
+            Set<String> items = selectItems(form);
 
             if (form != null && CollectionUtils.isNotEmpty(items)) {
                 map.put(form, items);
@@ -60,13 +60,14 @@ public class DialogReader {
         }
     }
 
-    public Set<String> selectItems() {
+    public Set<String> selectItems(String form) {
         Set<String> wantedItems = new LinkedHashSet<>();
 
         boolean isValidInput = false;
         while (!isValidInput) {
             String message = "Մուտքագրեք կետերն ու ենթակետերը (Օրինակ՝ 1, 2.1, 3) ";
-            String input = JOptionPane.showInputDialog(null, message, "Տվյալներ", QUESTION_MESSAGE);
+            String title = form + "-ի տվյալներ";
+            String input = JOptionPane.showInputDialog(null, message, title, QUESTION_MESSAGE);
             if (input == null) {
                 throw new CancellationException("Կետերն ու ենթակետերը դատարկ են։ Հաշվետվության ստեղծումը չեղարկվեց։ ");
             }

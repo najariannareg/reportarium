@@ -17,6 +17,7 @@ public class ReportGenerator {
 
     private static Map<String, String> createFormsMap() {
         Map<String, String> map = new LinkedHashMap<>();
+        map.put("Հավելված 2", "Form-2.csv");
         map.put("Հավելված 5", "Form-5.csv");
         map.put("Հավելված 6", "Form-6.csv");
         map.put("Հավելված 6.1", "Form-6.1.csv");
